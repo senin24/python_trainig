@@ -19,19 +19,19 @@ class test_add_group(unittest.TestCase):
     def open_home_page(self, wd):
         wd.get("http://192.168.10.214/addressbook/index.php")
 
-    def login(self, wd):
-        wd.find_element_by_name("user").send_keys("admin")
-        wd.find_element_by_name("pass").send_keys("secret")
+    def login(self, wd, username, password):
+        wd.find_element_by_name("user").send_keys(username)
+        wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath(".//*[@id='LoginForm']/input[@value='Login']").click()
 
     def open_groups_page(self, wd):
         wd.find_element_by_link_text("groups").click()
 
-    def create_group(self, wd):
+    def create_group(self, wd, name, header, footer):
         wd.find_element_by_name("new").click()
-        wd.find_element_by_name("group_name").send_keys("python_test_group")
-        wd.find_element_by_name("group_header").send_keys("python_test_group_Logo")
-        wd.find_element_by_name("group_footer").send_keys("python_test_group_Comment")
+        wd.find_element_by_name("group_name").send_keys(name)
+        wd.find_element_by_name("group_header").send_keys(header)
+        wd.find_element_by_name("group_footer").send_keys(footer)
         wd.find_element_by_name("submit").click()
 
     def return_to_group_page(self, wd):
@@ -40,13 +40,24 @@ class test_add_group(unittest.TestCase):
     def logout(self, wd):
         wd.find_element_by_link_text("Logout").click()
 
-    def test_test_add_group(self):
+    def test_add_group(self):
         success = True
         wd = self.wd
         self.open_home_page(wd)
-        self.login(wd)
+        self.login(wd, username="admin", password="secret")
         self.open_groups_page(wd)
-        self.create_group(wd)
+        self.create_group(wd, name="python_test_group", header="python_test_group_Logo", footer="python_test_group_Comment")
+        self.return_to_group_page(wd)
+        self.logout(wd)
+        self.assertTrue(success)
+
+    def test_add_empty_group(self):
+        success = True
+        wd = self.wd
+        self.open_home_page(wd)
+        self.login(wd, username="admin", password="secret")
+        self.open_groups_page(wd)
+        self.create_group(wd, name="", header="", footer="")
         self.return_to_group_page(wd)
         self.logout(wd)
         self.assertTrue(success)
