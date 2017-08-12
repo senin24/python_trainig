@@ -18,6 +18,7 @@ class test_add_contact(unittest.TestCase):
         self.wd.implicitly_wait(60)
 
     def create_contact(self, wd, contact):
+        self.open_contacts_page(wd)
         for attr, value in contact.__dict__.items():
             if (str(attr) == 'bday') or (str(attr) == 'bmonth'):
                 wd.find_element_by_xpath(
@@ -30,6 +31,7 @@ class test_add_contact(unittest.TestCase):
         wd.get("http://192.168.10.214/addressbook/index.php")
 
     def login(self, wd, username, password):
+        self.open_home_page(wd)
         wd.find_element_by_name("user").send_keys(username)
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath(".//*[@id='LoginForm']/input[@value='Login']").click()
@@ -43,12 +45,9 @@ class test_add_contact(unittest.TestCase):
     def test_add_contact(self):
         success = True
         wd = self.wd
-        self.open_home_page(wd)
         self.login(wd, username="admin", password="secret")
-        self.open_contacts_page(wd)
         self.create_contact(wd, Contact(firstname="Senin", lastname="Pavel", email="psenin@mail.ru", bday="24",
-                                        bmonth="December",
-                                        byear="1981"))
+                                        bmonth="December", byear="1981"))
         self.logout(wd)
         self.assertTrue(success)
 
