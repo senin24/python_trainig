@@ -17,8 +17,9 @@ class test_add_contact(unittest.TestCase):
         self.wd = WebDriver(capabilities={"marionette": False})
         self.wd.implicitly_wait(60)
 
-    def create_contact(self, wd, contact):
-        self.open_contacts_page(wd)
+    def create_contact(self, contact):
+        wd = self.wd
+        self.open_contacts_page()
         for attr, value in contact.__dict__.items():
             if (str(attr) == 'bday') or (str(attr) == 'bmonth'):
                 wd.find_element_by_xpath(
@@ -27,28 +28,32 @@ class test_add_contact(unittest.TestCase):
             wd.find_element_by_name(value.xpath).send_keys(value.value)
         wd.find_element_by_name("submit").click()
 
-    def open_home_page(self, wd):
+    def open_home_page(self):
+        wd = self.wd
         wd.get("http://192.168.10.214/addressbook/index.php")
 
-    def login(self, wd, username, password):
-        self.open_home_page(wd)
+    def login(self, username, password):
+        wd = self.wd
+        self.open_home_page()
         wd.find_element_by_name("user").send_keys(username)
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath(".//*[@id='LoginForm']/input[@value='Login']").click()
 
-    def open_contacts_page(self, wd):
+    def open_contacts_page(self):
+        wd = self.wd
         wd.find_element_by_link_text("add new").click()
 
-    def logout(self, wd):
+    def logout(self):
+        wd = self.wd
         wd.find_element_by_link_text("Logout").click()
 
     def test_add_contact(self):
         success = True
         wd = self.wd
-        self.login(wd, username="admin", password="secret")
-        self.create_contact(wd, Contact(firstname="Senin", lastname="Pavel", email="psenin@mail.ru", bday="24",
+        self.login(username="admin", password="secret")
+        self.create_contact(Contact(firstname="Senin", lastname="Pavel", email="psenin@mail.ru", bday="24",
                                         bmonth="December", byear="1981"))
-        self.logout(wd)
+        self.logout()
         self.assertTrue(success)
 
     def tearDown(self):

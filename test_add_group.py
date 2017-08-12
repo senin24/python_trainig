@@ -17,20 +17,24 @@ class test_add_group(unittest.TestCase):
         self.wd = WebDriver(capabilities={"marionette": False})
         self.wd.implicitly_wait(60)
 
-    def open_home_page(self, wd):
+    def open_home_page(self):
+        wd = self.wd
         wd.get("http://192.168.10.214/addressbook/index.php")
 
-    def login(self, wd, username, password):
-        self.open_home_page(wd)
+    def login(self, username, password):
+        wd = self.wd
+        self.open_home_page()
         wd.find_element_by_name("user").send_keys(username)
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath(".//*[@id='LoginForm']/input[@value='Login']").click()
 
-    def open_groups_page(self, wd):
+    def open_groups_page(self):
+        wd = self.wd
         wd.find_element_by_link_text("groups").click()
 
-    def create_group(self, wd, group):
-        self.open_groups_page(wd)
+    def create_group(self, group):
+        wd = self.wd
+        self.open_groups_page()
         wd.find_element_by_name("new").click()
         wd.find_element_by_name("group_name").send_keys(group.name)
         wd.find_element_by_name("group_header").send_keys(group.header)
@@ -41,23 +45,23 @@ class test_add_group(unittest.TestCase):
     def return_to_group_page(self, wd):
         wd.find_element_by_link_text("group page").click()
 
-    def logout(self, wd):
+    def logout(self):
+        wd = self.wd
         wd.find_element_by_link_text("Logout").click()
 
     def test_add_group(self):
         success = True
         wd = self.wd
-        self.login(wd, username="admin", password="secret")
-        self.create_group(wd, Group(name="python_test_group", header="python_test_group_Logo", footer="python_test_group_Comment"))
-        self.logout(wd)
+        self.login(username="admin", password="secret")
+        self.create_group(Group(name="python_test_group", header="python_test_group_Logo", footer="python_test_group_Comment"))
+        self.logout()
         self.assertTrue(success)
 
     def test_add_empty_group(self):
         success = True
-        wd = self.wd
-        self.login(wd, username="admin", password="secret")
-        self.create_group(wd, Group(name="", header="", footer=""))
-        self.logout(wd)
+        self.login( username="admin", password="secret")
+        self.create_group(Group(name="", header="", footer=""))
+        self.logout()
         self.assertTrue(success)
 
     def tearDown(self):
