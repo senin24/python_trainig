@@ -10,6 +10,6 @@ class SessionHelper:
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath(".//*[@id='LoginForm']/input[@value='Login']").click()
 
-    def logout(self):
+    def logout(self) -> object:
         wd = self.app.wd
         wd.find_element_by_link_text("Logout").click()

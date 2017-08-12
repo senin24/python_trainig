@@ -17,3 +17,14 @@ class ContactHelper:
                 continue
             wd.find_element_by_name(value.xpath).send_keys(value.value)
         wd.find_element_by_name("submit").click()
+
+    def delete_first_contact(self):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]").click()
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to_alert().accept()
+
+    def modify_first_contact(self, contact):
+        wd = self.app.wd
+        wd.find_element_by_xpath(".//*[@title='Edit']").click()
+        self.create(contact)
