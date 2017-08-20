@@ -4,8 +4,8 @@ t_contact = namedtuple("Field", ["value", "xpath"])
 
 
 class Contact:
-    def __init__(self, firstname="", lastname="", nickname="", company="", title="", address="", home="", mobile="",
-                 email="", homepage="", bday="", bmonth="", byear=""):
+    def __init__(self, firstname=None, lastname=None, nickname=None, company=None, title=None, address=None, home=None, mobile=None,
+                 email=None, homepage=None, bday=None, bmonth=None, byear=None):
         self.firstname = t_contact(firstname, "firstname")
         self.lastname = t_contact(lastname, "lastname")
         self.nickname = t_contact(nickname, "nickname")
