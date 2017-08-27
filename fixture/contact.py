@@ -33,21 +33,27 @@ class ContactHelper:
             wd.find_element_by_name(value.xpath).clear()
             wd.find_element_by_name(value.xpath).send_keys(value.value)
 
-    def delete_first_contact(self):
+    def delete_contact_by_id(self, index):
         wd = self.app.wd
         self.open_contacts_page()
-        wd.find_element_by_name("selected[]").click()
+        wd.find_elements_by_name("selected[]")[index].click()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
         self.contacts_cache = None
 
-    def modify_first_contact(self, contact):
+    def delete_first_contact(self):
+        self.delete_contact_by_id(0)
+
+    def modify_contact_by_id(self, contact, index):
         wd = self.app.wd
         self.open_contacts_page()
-        wd.find_element_by_xpath(".//*[@title='Edit']").click()
+        wd.find_elements_by_xpath(".//*[@title='Edit']")[index].click()
         self.fill_contact_form(contact)
         wd.find_element_by_name("update").click()
         self.contacts_cache = None
+
+    def modify_first_contact(self, contact, index):
+        self.modify_contact_by_id(contact,0)
 
     def count(self):
         wd = self.app.wd
