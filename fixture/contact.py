@@ -21,20 +21,23 @@ class ContactHelper:
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
-        for attr, value in contact.__dict__.items():
-            if str(attr) == "id" or (str(attr) == 'all_address_from_home_page') or (
-                str(attr) == 'all_emails_from_home_page') or (
-                        str(attr) == 'all_phones_from_home_page'):
+        print("Contact - " + str(contact))
+        for attribute in dir(contact):
+            attribute_name = str(attribute)
+            attribute_value = str(getattr(contact, attribute))
+            print(attribute_name + " = " + attribute_value)
+            if attribute_name == "id" or (attribute_name == 'all_address_from_home_page') or (
+                        attribute_name == 'all_emails_from_home_page') or (
+                        attribute_name == 'all_phones_from_home_page') or attribute_name.startswith("__") \
+                    or (getattr(contact, attribute) is None) or (callable(getattr(contact, attribute))):
                 continue
-            if value.value is None:
-                continue
-            if (str(attr) == 'bday') or (str(attr) == 'bmonth'):
+            if (attribute_name == 'bday' and attribute_value) or (attribute_name == 'bmonth'):
                 wd.find_element_by_xpath(
-                    "//select[@name='" + value.xpath + "']/*[@value='" + value.value + "']").click()
+                    "//select[@name='" + attribute_name + "']/*[@value='" + attribute_value + "']").click()
                 continue
-            wd.find_element_by_name(value.xpath).click()
-            wd.find_element_by_name(value.xpath).clear()
-            wd.find_element_by_name(value.xpath).send_keys(value.value)
+            wd.find_element_by_name(attribute_name).click()
+            wd.find_element_by_name(attribute_name).clear()
+            wd.find_element_by_name(attribute_name).send_keys(attribute_value)
 
     def delete_contact_by_id(self, index):
         wd = self.app.wd
@@ -103,7 +106,7 @@ class ContactHelper:
             if (str(attr) == 'all_address_from_home_page') or (str(attr) == 'all_emails_from_home_page') or (
                 str(attr) == 'all_phones_from_home_page'):
                 continue
-            tmp.append(wd.find_element_by_name(value.xpath).get_attribute("value"))
+            tmp.append(wd.find_element_by_name(value).get_attribute("value"))
         return Contact(id=tmp[0], firstname=tmp[1], lastname=tmp[2], nickname=tmp[3], company=tmp[4], title=tmp[5],
                        address=tmp[6], home=tmp[7], mobile=tmp[8], work=tmp[9], phone2=tmp[10], email=tmp[11],
                        email2=tmp[12], email3=tmp[13], homepage=tmp[14], bday=tmp[15], bmonth=tmp[16], byear=tmp[17])
