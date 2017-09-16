@@ -2,8 +2,8 @@
 from model.group import Group
 
 
-def test_add_group(app, data_groups):
-    group = data_groups
+def test_add_group(app, json_groups):
+    group = json_groups
     old_groups = app.group.get_group_list()
     # group = Group(name="python_test_group", header="python_test_group_Logo", footer="python_test_group_Comment")
     app.group.create(group)
