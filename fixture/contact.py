@@ -21,11 +21,9 @@ class ContactHelper:
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
-        print("Contact - " + str(contact))
         for attribute in dir(contact):
             attribute_name = str(attribute)
             attribute_value = str(getattr(contact, attribute))
-            print(attribute_name + " = " + attribute_value)
             if attribute_name == "id" or (attribute_name == 'all_address_from_home_page') or (
                         attribute_name == 'all_emails_from_home_page') or (
                         attribute_name == 'all_phones_from_home_page') or attribute_name.startswith("__") \
@@ -47,6 +45,14 @@ class ContactHelper:
         wd.switch_to_alert().accept()
         self.contacts_cache = None
 
+    def delete_contact_by_id_bd(self, id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        wd.find_element_by_xpath(".//*[@id='%s']" % id).click()
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to_alert().accept()
+        self.contacts_cache = None
+
     def delete_first_contact(self):
         self.delete_contact_by_id(0)
 
@@ -54,6 +60,11 @@ class ContactHelper:
         wd = self.app.wd
         self.open_contacts_page()
         wd.find_elements_by_xpath(".//*[@title='Edit']")[index].click()
+
+    def open_contact_to_edit_by_id(self, id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        wd.find_element_by_xpath("//*[@id='%s']/../..//img[@title='Edit']" % id).click()
 
     def open_contact_to_view_by_index(self, index):
         wd = self.app.wd
@@ -63,6 +74,13 @@ class ContactHelper:
     def modify_contact_by_id(self, contact, index):
         wd = self.app.wd
         self.open_contact_to_edit_by_index(index)
+        self.fill_contact_form(contact)
+        wd.find_element_by_name("update").click()
+        self.contacts_cache = None
+
+    def modify_contact_by_id_bd(self, contact, id):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_id(id)
         self.fill_contact_form(contact)
         wd.find_element_by_name("update").click()
         self.contacts_cache = None
@@ -110,3 +128,6 @@ class ContactHelper:
         return Contact(id=tmp[0], firstname=tmp[1], lastname=tmp[2], nickname=tmp[3], company=tmp[4], title=tmp[5],
                        address=tmp[6], home=tmp[7], mobile=tmp[8], work=tmp[9], phone2=tmp[10], email=tmp[11],
                        email2=tmp[12], email3=tmp[13], homepage=tmp[14], bday=tmp[15], bmonth=tmp[16], byear=tmp[17])
+
+    def clean(self, contact):
+        return Contact(id=contact.id, firstname=contact.firstname.strip(), lastname=contact.lastname.strip())

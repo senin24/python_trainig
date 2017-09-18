@@ -22,9 +22,7 @@ def test_modify_random_group_name(app, db, check_ui):
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
 
     if check_ui:
-        def clean(group):
-            return Group(id=group.id, name=group.name.strip())
-        db_list = map(clean, new_groups)
+        db_list = map(app.group.clean, new_groups)
         assert sorted(db_list, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
 
 
